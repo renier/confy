@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    iam.amazonaws.com/role: default
+  labels:
+    app.kubernetes.io/name: confy-example
+  name: confy-example
+spec:
+  containers:
+  - image: path/to/image 
+    imagePullPolicy: IfNotPresent
+    name: confy-example
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 1000
+    env:
+    - name: VAULT_ADDR
+      value: https://vault:8200/
+    - name: VAULT_AUTH_METHOD
+      value: jwt
+    - name: VAULT_PATH
+      value: dev
+    - name: VAULT_ROLE
+      value: default
+    - name: VAULT_LOG_LEVEL
+      value: debug
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-rsbzw
+      readOnly: true
+  imagePullSecrets:
+  - name: default
+  securityContext:
+    fsGroup: 1000
+    runAsGroup: 1000
+    runAsUser: 1000
+  serviceAccount: default
+  serviceAccountName: default
+  tolerations:
+  - effect: NoSchedule
+    key: frontend
+    operator: Equal
+    value: "true"
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/frontend
+    operator: Equal
+    value: "true"
+  volumes:
+  - name: kube-api-access-rsbzw
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace

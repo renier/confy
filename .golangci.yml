@@ -1,0 +1,156 @@
+# This file contains all available configuration options
+# with their default values.
+
+run:
+  go: '1.20'
+  timeout: 5m
+  deadline: 10m  # Timeout for analysis, e.g. 30s, 5m, default is 1m.
+  tests: false   # Include test files or not, default is true.
+
+  # Can use regexp here: regexp is applied on full path. The default value is an
+  # empty list, but next dirs are always skipped independently of this option's
+  # value.
+  skip-files: []
+  skip-dirs:
+    - fixtures
+    - .vscode
+    - .gocoverage
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters:
+  enable:
+    # # Default settings (1.47.3); when upgrading ensure these are used.
+    # - asasalint
+    # - asciicheck
+    # - bidichk
+    # - bodyclose
+    # - contextcheck
+    # - durationcheck
+    # - errcheck
+    # - errchkjson
+    # - errorlint
+    # - exhaustive
+    # - exportloopref
+    # - gosec
+    # - gosimple
+    # - govet
+    # - ineffassign
+    # - makezero
+    # - nilerr
+    # - noctx
+    # - rowserrcheck
+    # - sqlclosecheck
+    # - staticcheck
+    # - structcheck
+    # - typecheck
+    # - unused
+    - depguard
+    - dupl
+    - funlen
+    - gci
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - lll
+    - megacheck
+    - misspell
+    - nakedret
+    - stylecheck
+    - unconvert
+
+  presets:
+    - bugs
+    - unused
+
+  disable:
+    - unparam
+
+    # Deprecated.
+    - scopelint # Preset bugs, replaced by exportloopref.
+    - deadcode  # Preset unused, replaced by unused.
+    - varcheck  # Preset unused, replaced by unused.
+
+    # Due to Go 1.18, and should try again soon.
+    - rowserrcheck
+    - sqlclosecheck
+    - structcheck
+
+  fast: false
+
+issues:
+  exclude-rules:
+     - linters:
+        - lll
+       source: "^//go:generate "
+
+linters-settings:
+  depguard:
+    list-type: blacklist
+    include-go-root: false
+    packages:
+      - github.com/davecgh/go-spew/spew
+
+  errcheck:
+    # [Deprecated] Comma-separated list of pairs of the form pkg:regex. The
+    # regex is used to ignore names within pkg. (default "fmt:.*").
+    # See: https://github.com/kisielk/errcheck#the-deprecated-method
+    ignore: fmt:.*,io/ioutil:^Read.*
+
+  exhaustive:
+    check-generated: false # Check switch statements in generated files also.
+    # Indicates that switch statements are to be considered exhaustive if a
+    # 'default' case is present, even if all enum members aren't listed in the
+    # switch.
+    default-signifies-exhaustive: true
+
+  funlen:
+    lines: 160
+    statements: 90
+
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(code.8labs.io)
+      - prefix(github.com/secureworks)
+    skip-generated: true
+    custom-order: true
+
+  goconst:
+    min-len: 5 # Min length of string constant, 3 by default.
+    min-occurrences: 5 # Min occurrences count to trigger, 3 by default.
+
+  gocritic:
+    # To see which checks and tags are enabled run `GL_DEBUG=gocritic golangci-lint run`
+    disabled-checks: # Can't be combined with 'enabled-checks'.
+      - regexpMust # Keep.
+    enabled-tags:
+      - performance
+    settings:
+      captLocal:
+        paramsOnly: true
+      rangeValCopy:
+        sizeThreshold: 256
+
+  gocyclo:
+    min-complexity: 25 # Default is 30 (but we recommend 10-20).
+
+  lll:
+    line-length: 140 # Default is 120.
+
+  misspell:
+    locale: US
+
+  nakedret:
+    max-func-lines: 30
+
+  staticcheck:
+    checks: ["all", "-SA1019"] # TODO(PH): replace package "github.com/golang/protobuf/jsonpb" with "google.golang.org/protobuf/encoding/protojson"
+
+  unused:
+    check-exported: false

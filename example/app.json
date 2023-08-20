@@ -1,0 +1,11 @@
+{
+    "debug": true,
+    "host": "localhost.localdomain",
+    "port": 8080,
+    "presto_query_delay": "5s",
+    "log_fields": {
+        "one": "uno",
+        "two": "dos"
+    },
+    "metric_tags": ["env", "tenant", "user"]
+}

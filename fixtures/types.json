@@ -1,0 +1,21 @@
+{
+	"s": "a string",
+	"ss": 123,
+
+	"b": true,
+	"bb": "TRUE",
+	"bbb": "abracadabra",
+
+	"i": 9,
+	"ii": "8",
+	"iii": "open sesame",
+
+	"m": {"one": "uno", "two": "dos", "three": "tres"},
+	"mm": ["zoo"],
+
+	"l": ["one", "two", "three"],
+	"ll": "hocus pocus",
+
+	"d": "7s",
+	"dd": false
+}
